@@ -23,8 +23,6 @@ package de.schnippsche.solarreader.plugins.csvexporter;
 
 import de.schnippsche.solarreader.backend.exporter.AbstractExporter;
 import de.schnippsche.solarreader.backend.exporter.TransferData;
-import de.schnippsche.solarreader.backend.protocol.KnownProtocol;
-import de.schnippsche.solarreader.backend.provider.SupportedInterface;
 import de.schnippsche.solarreader.backend.singleton.GlobalUsrStore;
 import de.schnippsche.solarreader.backend.table.Table;
 import de.schnippsche.solarreader.backend.table.TableCell;
@@ -36,7 +34,6 @@ import de.schnippsche.solarreader.frontend.ui.HtmlWidth;
 import de.schnippsche.solarreader.frontend.ui.UIInputElementBuilder;
 import de.schnippsche.solarreader.frontend.ui.UIList;
 import de.schnippsche.solarreader.frontend.ui.ValueText;
-import de.schnippsche.solarreader.plugin.PluginMetadata;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -59,15 +56,6 @@ import org.tinylog.Logger;
  * data to CSV files. It supports configuration options such as the delimiter, terminator, line
  * break, and output path.
  */
-@PluginMetadata(
-    name = "CsvExporter",
-    version = "1.0.1",
-    author = "Stefan Töngi",
-    url = "https://github.com/solarreader-plugins/plugin-CsvExporter",
-    svgImage = "csv.svg",
-    supportedInterfaces = {SupportedInterface.NONE},
-    usedProtocol = KnownProtocol.NONE,
-    supports = "")
 public class CsvExporter extends AbstractExporter {
   private static final String REQUIRED_ERROR = "csvexporter.required.error";
   private static final String DELIMITER = "delimiter";
