@@ -6,29 +6,49 @@
 
     <artifactId>CsvExporter</artifactId>
     <groupId>de.schnippsche.solarreader.plugins</groupId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <properties>
-        <compiler.version>11</compiler.version>
-        <maven.compiler.release>${compiler.version}</maven.compiler.release>
-        <maven.compiler.source>${compiler.version}</maven.compiler.source>
-        <maven.compiler.target>${compiler.version}</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
-        <mainClass>de.schnippsche.solarreader.plugins.csvexporter.CsvExporter</mainClass>
         <!-- Plugin Versions -->
         <spotless.version>2.46.1</spotless.version>
         <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
         <maven.jar.plugin.version>3.4.1</maven.jar.plugin.version>
         <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
+        <maven.resource.plugin>3.3.1</maven.resource.plugin>
         <!-- Dependency Versions -->
-        <solarreader.version>2.0.1</solarreader.version>
         <junit.version>5.12.2</junit.version>
         <mockito.version>5.18.0</mockito.version>
+        <solarreader.version>2.0.1</solarreader.version>
+        <!-- main class -->
+        <mainClass>de.schnippsche.solarreader.plugins.csvexporter.CsvExporter</mainClass>
+
+        <!-- Project Metadata -->
+        <software.main.class>${mainClass}</software.main.class>
+        <software.name>${project.artifactId}</software.name>
+        <software.version>${project.version}</software.version>
+        <software.build.date>${maven.build.timestamp}</software.build.date>
+        <software.author>Stefan Töngi</software.author>
+        <software.repository>https://github.com/solarreader-plugins/plugin-csvexporter</software.repository>
+        <software.icon>csv.svg</software.icon>
+        <software.support.info>export data to csv file</software.support.info>
+        <software.interfaces>NONE</software.interfaces>
+        <software.protocol>NONE</software.protocol>
+
     </properties>
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -52,10 +72,11 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>spotless-check</id>
                         <goals>
                             <goal>check</goal>
                         </goals>
-                        <phase>install</phase>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -65,8 +86,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
 
@@ -76,19 +96,9 @@
                 <version>${maven.jar.plugin.version}</version>
                 <configuration>
                     <archive>
-                        <manifestEntries>
-                            <Software-Version>${project.version}</Software-Version>
-                            <Software-Build-Date>${maven.build.timestamp}</Software-Build-Date>
-                            <Main-Class>${mainClass}</Main-Class>
-                            <Software-Name>CsvExporter</Software-Name>
-                            <Software-Author>Stefan Töngi</Software-Author>
-                            <Software-Repository>https://github.com/solarreader-plugins/plugin-csvexporter
-                            </Software-Repository>
-                            <Software-Icon>csv.svg</Software-Icon>
-                            <Software-Support-Info>export data to csv file</Software-Support-Info>
-                            <Software-Interfaces>NONE</Software-Interfaces>
-                            <Software-Protocol>NONE</Software-Protocol>
-                        </manifestEntries>
+                        <manifest>
+                            <mainClass>${mainClass}</mainClass>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
@@ -99,18 +109,13 @@
                 <version>${maven.surefire.plugin.version}</version>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resource.plugin}</version>
+            </plugin>
+
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.class</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
+
     </build>
 
     <dependencies>
@@ -127,10 +132,17 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>
