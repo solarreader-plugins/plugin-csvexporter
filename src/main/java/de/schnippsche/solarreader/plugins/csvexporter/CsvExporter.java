@@ -68,7 +68,7 @@ public class CsvExporter extends AbstractExporter {
   private String currentTerminator;
   private String currentLinebreaker;
   private Thread consumerThread;
-  private volatile boolean running = true;
+  private volatile boolean running;
 
   /** Constructs a new CsvExporter with default configuration. */
   public CsvExporter() {
@@ -85,8 +85,8 @@ public class CsvExporter extends AbstractExporter {
   @Override
   public void initialize() {
     Logger.debug("initialize csv exporter");
-    consumerThread = new Thread(this::processQueue);
-    consumerThread.setName("CsvExporterThread");
+    running = true;
+    consumerThread = new Thread(this::processQueue, "CsvExporterThread");
     consumerThread.start();
   }
 
@@ -94,7 +94,16 @@ public class CsvExporter extends AbstractExporter {
   @Override
   public void shutdown() {
     running = false;
-    consumerThread.interrupt();
+    if (consumerThread != null && consumerThread.isAlive()) {
+      consumerThread.interrupt();
+      try {
+        consumerThread.join();
+      } catch (InterruptedException e) {
+        Logger.warn("shutdown csv exporter interrupted");
+        Thread.currentThread().interrupt();
+      }
+    }
+    Logger.debug("shutdown csv exporter finished");
   }
 
   /**
@@ -211,10 +220,9 @@ public class CsvExporter extends AbstractExporter {
         TransferData transferData = queue.take();
         doStandardExport(transferData);
       } catch (InterruptedException e) {
-        if (!running) {
-          break; // Exit loop if not running
-        }
+        Logger.warn("processQueue interrupted");
         Thread.currentThread().interrupt();
+        break;
       }
     }
   }
